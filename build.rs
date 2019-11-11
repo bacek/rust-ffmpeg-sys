@@ -5,7 +5,7 @@ extern crate pkg_config;
 extern crate regex;
 
 use std::env;
-use std::fs::{self, create_dir, symlink_metadata, File};
+use std::fs::{self, File};
 use std::io::{self, BufRead, BufReader, Write};
 use std::path::PathBuf;
 use std::process::Command;
