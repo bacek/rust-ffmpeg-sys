@@ -1,14 +1,17 @@
 [package]
-name    = "ffmpeg-sys"
+name    = "ffmpeg4-sys"
 version = "4.2.1"
 build   = "build.rs"
 links   = "ffmpeg"
 
-authors = ["meh. <meh@schizofreni.co>"]
+authors = [
+    "meh. <meh@schizofreni.co>",
+    "Vasily Chekalkin <bacek@bacek.com>",
+]
 license = "WTFPL"
 
 description = "FFI bindings to FFmpeg"
-repository  = "https://github.com/meh/rust-ffmpeg-sys"
+repository  = "https://github.com/bacek/rust-ffmpeg-sys"
 keywords    = ["audio", "video"]
 
 [dependencies]
