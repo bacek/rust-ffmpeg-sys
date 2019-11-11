@@ -11,7 +11,7 @@ authors = [
 license = "WTFPL"
 
 description = "FFI bindings to FFmpeg"
-repository  = "https://github.com/bacek/rust-ffmpeg-sys"
+repository  = "https://github.com/bacek/rust-ffmpeg4-sys"
 keywords    = ["audio", "video"]
 
 [dependencies]
