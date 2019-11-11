@@ -907,11 +907,9 @@ fn main() {
         ],
     );
 
-    let tmp = std::env::current_dir().unwrap().join("tmp");
-    if symlink_metadata(&tmp).is_err() {
-        create_dir(&tmp).expect("Failed to create temporary output dir");
-    }
-    let mut f = File::create(tmp.join(".build")).expect("Filed to create .build");
+    // For debugging purpose only.
+    let tmp = std::env::temp_dir();
+    let mut f = File::create(tmp.join("ffmpeg4.build")).expect("Filed to create ffmpeg4.build");
     let tool = cc::Build::new().get_compiler();
     write!(f, "{}", tool.path().to_string_lossy().into_owned()).expect("failed to write cmd");
     for arg in tool.args() {
@@ -920,6 +918,7 @@ fn main() {
     for dir in &include_paths {
         write!(f, " -I {}", dir.to_string_lossy().into_owned()).expect("failed to write incdir");
     }
+
     let clang_includes = include_paths
         .iter()
         .map(|include| format!("-I{}", include.to_string_lossy()));
