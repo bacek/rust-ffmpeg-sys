@@ -102,13 +102,17 @@ impl ParseCallbacks for IntCallbacks {
         }
     }
 
-    // https://github.com/servo/rust-bindgen/issues/687
-    // Original fix is broken with bindgen 0.51 and linux 5.2
+    // https://github.com/rust-lang/rust-bindgen/issues/687#issuecomment-388277405
     fn will_parse_macro(&self, name: &str) -> MacroParsingBehavior {
-        if name.starts_with("FP_") {
-            MacroParsingBehavior::Ignore
-        } else {
-            MacroParsingBehavior::Default
+        use MacroParsingBehavior::*;
+
+        match name {
+            "FP_INFINITE" => Ignore,
+            "FP_NAN" => Ignore,
+            "FP_NORMAL" => Ignore,
+            "FP_SUBNORMAL" => Ignore,
+            "FP_ZERO" => Ignore,
+            _ => Default,
         }
     }
 }
@@ -935,12 +939,6 @@ fn main() {
     let mut builder = bindgen::Builder::default()
         .clang_args(clang_includes)
         .ctypes_prefix("libc")
-        // https://github.com/servo/rust-bindgen/issues/687
-        .blacklist_type("FP_NAN")
-        .blacklist_type("FP_INFINITE")
-        .blacklist_type("FP_ZERO")
-        .blacklist_type("FP_SUBNORMAL")
-        .blacklist_type("FP_NORMAL")
         // https://github.com/servo/rust-bindgen/issues/550
         .blacklist_type("max_align_t")
         .rustified_enum("*")
