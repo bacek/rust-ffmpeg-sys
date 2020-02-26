@@ -947,6 +947,8 @@ fn main() {
         .rustified_enum("*")
         .prepend_enum_name(false)
         .derive_eq(true)
+        // Otherwise bindgen is confused with multiline comments
+        .generate_comments(false)
         .parse_callbacks(Box::new(IntCallbacks));
 
     // The input headers we would like to generate

@@ -7,10 +7,10 @@ sudo apt-get install yasm
 pushd ~
 git clone https://github.com/FFmpeg/FFmpeg.git
 cd FFmpeg
-git checkout release/3.2
+git checkout release/4.2
 mkdir ~/FFmpeg-build
 cd ~/FFmpeg-build
-../FFmpeg/configure --disable-ffprobe --disable-ffserver --disable-doc --enable-avresample
+../FFmpeg/configure --disable-ffprobe --disable-ffserver --disable-doc
 make -j
 sudo make install
 make distclean
