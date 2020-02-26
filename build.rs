@@ -514,18 +514,25 @@ fn main() {
         }
 
         // Check additional required libraries.
+        // Flags are now of the type `EXTRALIBS-avcodec`
         {
             let config_mak = source().join("ffbuild/config.mak");
             let file = File::open(config_mak).unwrap();
             let reader = BufReader::new(file);
             let extra_libs = reader
                 .lines()
-                .find(|ref line| line.as_ref().unwrap().starts_with("EXTRALIBS"))
+                .filter(|ref line| line.as_ref().unwrap().starts_with("EXTRALIBS"))
                 .map(|line| line.unwrap())
-                .unwrap();
+                .collect::<Vec<String>>();
+            let mut linker_args = extra_libs
+                .iter()
+                .flat_map(|line| line.split('=').last().unwrap().split(' '))
+                .collect::<Vec<&str>>();
 
-            let linker_args = extra_libs.split('=').last().unwrap().split(' ');
+            linker_args.sort();
+            linker_args.dedup();
             let include_libs = linker_args
+                .iter()
                 .filter(|v| v.starts_with("-l"))
                 .map(|flag| &flag[2..]);
 
