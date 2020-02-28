@@ -4,6 +4,7 @@ extern crate num_cpus;
 extern crate pkg_config;
 extern crate regex;
 
+use std::collections::HashSet;
 use std::env;
 use std::fs::{self, File};
 use std::io::{self, BufRead, BufReader, Write};
@@ -521,16 +522,14 @@ fn main() {
             let reader = BufReader::new(file);
             let extra_libs = reader
                 .lines()
-                .filter(|ref line| line.as_ref().unwrap().starts_with("EXTRALIBS"))
-                .map(|line| line.unwrap())
+                .filter_map(Result::ok)
+                .filter(|line| line.starts_with("EXTRALIBS"))
                 .collect::<Vec<String>>();
-            let mut linker_args = extra_libs
+            let linker_args = extra_libs
                 .iter()
                 .flat_map(|line| line.split('=').last().unwrap().split(' '))
-                .collect::<Vec<&str>>();
+                .collect::<HashSet<&str>>();
 
-            linker_args.sort();
-            linker_args.dedup();
             let include_libs = linker_args
                 .iter()
                 .filter(|v| v.starts_with("-l"))
