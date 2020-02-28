@@ -4,6 +4,7 @@ extern crate num_cpus;
 extern crate pkg_config;
 extern crate regex;
 
+use std::collections::HashSet;
 use std::env;
 use std::fs::{self, File};
 use std::io::{self, BufRead, BufReader, Write};
@@ -514,18 +515,23 @@ fn main() {
         }
 
         // Check additional required libraries.
+        // Flags are now of the type `EXTRALIBS-avcodec`
         {
             let config_mak = source().join("ffbuild/config.mak");
             let file = File::open(config_mak).unwrap();
             let reader = BufReader::new(file);
             let extra_libs = reader
                 .lines()
-                .find(|ref line| line.as_ref().unwrap().starts_with("EXTRALIBS"))
-                .map(|line| line.unwrap())
-                .unwrap();
+                .filter_map(Result::ok)
+                .filter(|line| line.starts_with("EXTRALIBS"))
+                .collect::<Vec<String>>();
+            let linker_args = extra_libs
+                .iter()
+                .flat_map(|line| line.split('=').last().unwrap().split(' '))
+                .collect::<HashSet<&str>>();
 
-            let linker_args = extra_libs.split('=').last().unwrap().split(' ');
             let include_libs = linker_args
+                .iter()
                 .filter(|v| v.starts_with("-l"))
                 .map(|flag| &flag[2..]);
 
@@ -940,6 +946,8 @@ fn main() {
         .rustified_enum("*")
         .prepend_enum_name(false)
         .derive_eq(true)
+        // Otherwise bindgen is confused with multiline comments
+        .generate_comments(false)
         .parse_callbacks(Box::new(IntCallbacks));
 
     // The input headers we would like to generate
