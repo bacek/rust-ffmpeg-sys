@@ -1,0 +1,23 @@
+= Rust ffmpeg4 bindings
+
+[link=https://travis-ci.org/bacek/rust-ffmpeg4-sys]
+image::https://travis-ci.org/bacek/rust-ffmpeg4-sys.svg?branch=master[TravisCi]
+[link=https://docs.rs/ffmpeg4-sys]
+image::https://docs.rs/ffmpeg4-sys/badge.svg[Docs.rs]
+
+== Original code
+
+This repo is originally forked from the excellent work of meh.
+link:https://github.com/meh/rust-ffmpeg-sys[]
+
+== Supported versions
+
+Version of this crate corresponds version of ffmpeg it build with. Currently it is 4.2.2.
+
+== Building
+
+To build with locally installed ffmpeg libraries you'll need a working
+pkg-config. I use it on Debian Buster without any problems.
+
+To build with bundled ffmpeg sources when system installed ffmpeg is not
+available, you'll need `yasm` installed.
