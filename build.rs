@@ -146,23 +146,6 @@ fn search() -> PathBuf {
     absolute
 }
 
-fn fetch() -> io::Result<()> {
-    let status = Command::new("git")
-        .current_dir(&output())
-        .arg("clone")
-        .arg("-b")
-        .arg(format!("release/{}", version()))
-        .arg("https://github.com/FFmpeg/FFmpeg")
-        .arg(format!("ffmpeg-{}", version()))
-        .status()?;
-
-    if status.success() {
-        Ok(())
-    } else {
-        Err(io::Error::new(io::ErrorKind::Other, "fetch failed"))
-    }
-}
-
 fn switch(configure: &mut Command, feature: &str, name: &str) {
     let arg = if env::var("CARGO_FEATURE_".to_string() + feature).is_ok() {
         "--enable-"
@@ -173,7 +156,8 @@ fn switch(configure: &mut Command, feature: &str, name: &str) {
 }
 
 fn build() -> io::Result<()> {
-    let mut configure = Command::new("./configure");
+    let mut configure = Command::new(fs::canonicalize("./ffmpeg/configure").unwrap());
+
     configure.current_dir(&source());
     configure.arg(format!("--prefix={}", search().to_string_lossy()));
 
@@ -511,10 +495,9 @@ fn main() {
         );
         link_to_libraries(statik);
         if fs::metadata(&search().join("lib").join("libavutil.a")).is_err() {
-            fs::create_dir_all(&output())
+            fs::create_dir_all(&source())
                 .ok()
                 .expect("failed to create build directory");
-            fetch().unwrap();
             build().unwrap();
         }
 
