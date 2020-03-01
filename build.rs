@@ -175,6 +175,9 @@ fn build() -> io::Result<()> {
     // do not build programs since we don't need them
     configure.arg("--disable-programs");
 
+    // do not build doc
+    configure.arg("--disable-doc");
+
     // yasm is not available on docs.rs. Build crooked version
     if env::var("CARGO_FEATURE_BUILD_DISABLE_X86ASM").is_ok() {
         configure.arg("--disable-x86asm");
