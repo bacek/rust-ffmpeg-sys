@@ -1,6 +1,6 @@
 [package]
 name    = "ffmpeg4-sys"
-version = "4.2.2"
+version = "4.3.0-pre.0"
 build   = "build.rs"
 links   = "ffmpeg"
 
@@ -109,3 +109,7 @@ swscale    = []
 
 [package.metadata.docs.rs]
 features = ["build-disable-x86asm"]
+
+[badges]
+travis-ci = { repository="bacek/rust-ffmpeg4-sys", branch="master" }
+maintenance = { status = "passively-maintained" }
