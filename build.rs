@@ -1,6 +1,5 @@
 extern crate bindgen;
 extern crate cc;
-extern crate num_cpus;
 extern crate pkg_config;
 extern crate regex;
 
@@ -294,7 +293,7 @@ fn build() -> io::Result<()> {
     // run make
     Command::new("make")
         .arg("-j")
-        .arg(num_cpus::get().to_string())
+        .arg(env::var("NUM_JOBS").unwrap_or_else(|_| "1".into()))
         .current_dir(&source())
         .status()
         .map_err(|_| io::Error::new(io::ErrorKind::Other, "make failed"))?;
