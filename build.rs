@@ -343,19 +343,19 @@ fn check_features(
         ));
     }
 
-    let version_check_info = [("avcodec", 56, 60, 0, 80)];
+    let version_check_info = [("avutil", 56, 60, 0, 80)];
     for &(lib, begin_version_major, end_version_major, begin_version_minor, end_version_minor) in
         version_check_info.iter()
     {
         for version_major in begin_version_major..end_version_major {
             for version_minor in begin_version_minor..end_version_minor {
                 main_code.push_str(&format!(
-                    r#"printf("[{lib}_version_greater_than_{version_major}_{version_minor}]%d\n", LIB{lib_uppercase}_VERSION_MAJOR > {version_major} || (LIB{lib_uppercase}_VERSION_MAJOR == {version_major} && LIB{lib_uppercase}_VERSION_MINOR > {version_minor}));"#,
-                    lib = lib,
-                    lib_uppercase = lib.to_uppercase(),
-                    version_major = version_major,
-                    version_minor = version_minor
-                ));
+                                r#"printf("[{lib}_version_greater_than_{version_major}_{version_minor}]%d\n", LIB{lib_uppercase}_VERSION_MAJOR > {version_major} || (LIB{lib_uppercase}_VERSION_MAJOR == {version_major} && LIB{lib_uppercase}_VERSION_MINOR > {version_minor}));"#,
+                                lib = lib,
+                                lib_uppercase = lib.to_uppercase(),
+                                version_major = version_major,
+                                version_minor = version_minor
+                        ));
             }
         }
     }
@@ -986,7 +986,8 @@ fn main() {
         .header(search_include(&include_paths, "libavutil/imgutils.h"))
         .header(search_include(&include_paths, "libavutil/lfg.h"))
         .header(search_include(&include_paths, "libavutil/log.h"))
-        .header(search_include(&include_paths, "libavutil/lzo.h"))
+        // LZO is not "standalone" header. It's pulled as dependency of avcodec's
+        // .header(search_include(&include_paths, "libavutil/lzo.h"))
         .header(search_include(&include_paths, "libavutil/macros.h"))
         .header(search_include(&include_paths, "libavutil/mathematics.h"))
         .header(search_include(&include_paths, "libavutil/md5.h"))
