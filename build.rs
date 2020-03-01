@@ -1,7 +1,6 @@
 extern crate bindgen;
 extern crate cc;
 extern crate pkg_config;
-extern crate regex;
 
 use std::collections::HashSet;
 use std::env;
@@ -12,7 +11,6 @@ use std::process::Command;
 use std::str;
 
 use bindgen::callbacks::{IntKind, MacroParsingBehavior, ParseCallbacks};
-use regex::Regex;
 
 #[derive(Debug)]
 struct Library {
@@ -73,23 +71,18 @@ static LIBRARIES: &[Library] = &[
 struct IntCallbacks;
 
 impl ParseCallbacks for IntCallbacks {
-    fn int_macro(&self, _name: &str, value: i64) -> Option<IntKind> {
-        let ch_layout = Regex::new(r"^AV_CH").unwrap();
-        let codec_cap = Regex::new(r"^AV_CODEC_CAP").unwrap();
-        let codec_flag = Regex::new(r"^AV_CODEC_FLAG").unwrap();
-        let error_max_size = Regex::new(r"^AV_ERROR_MAX_STRING_SIZE").unwrap();
-
+    fn int_macro(&self, name: &str, value: i64) -> Option<IntKind> {
         if value >= i64::min_value() as i64
             && value <= i64::max_value() as i64
-            && ch_layout.is_match(_name)
+            && name.starts_with("AV_CH")
         {
             Some(IntKind::ULongLong)
         } else if value >= i32::min_value() as i64
             && value <= i32::max_value() as i64
-            && (codec_cap.is_match(_name) || codec_flag.is_match(_name))
+            && (name.starts_with("AV_CODEC_CAP") || name.starts_with("AV_CODEC_FLAG"))
         {
             Some(IntKind::UInt)
-        } else if error_max_size.is_match(_name) {
+        } else if name.starts_with("AV_ERROR_MAX_STRING_SIZE") {
             Some(IntKind::Custom {
                 name: "usize",
                 is_signed: false,
