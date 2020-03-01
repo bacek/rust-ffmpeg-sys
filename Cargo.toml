@@ -33,6 +33,9 @@ default  = ["avcodec", "avdevice", "avfilter", "avformat", "swresample", "swscal
 static = []
 build  = ["static"]
 
+# docs without yasm
+build-disable-x86asm = ["build"]
+
 # licensing
 build-license-gpl      = ["build"]
 build-license-nonfree  = ["build"]
@@ -103,3 +106,6 @@ avresample = []
 postproc   = []
 swresample = []
 swscale    = []
+
+[package.metadata.docs.rs]
+features = ["build-disable-x86asm"]

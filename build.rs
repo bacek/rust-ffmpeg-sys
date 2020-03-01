@@ -182,6 +182,11 @@ fn build() -> io::Result<()> {
     // do not build programs since we don't need them
     configure.arg("--disable-programs");
 
+    // yasm is not available on docs.rs. Build crooked version
+    if env::var("CARGO_FEATURE_BUILD_DISABLE_X86ASM").is_ok() {
+        configure.arg("--disable-x86asm");
+    }
+
     macro_rules! enable {
         ($conf:expr, $feat:expr, $name:expr) => {
             if env::var(concat!("CARGO_FEATURE_", $feat)).is_ok() {
