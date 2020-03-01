@@ -108,6 +108,7 @@ swscale    = []
 
 [package.metadata.docs.rs]
 features = ["build-disable-x86asm"]
+no-default-features = true
 
 [badges]
 travis-ci = { repository="bacek/rust-ffmpeg4-sys", branch="master" }
